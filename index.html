@@ -1,750 +1,557 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>技能书</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@700&display=swap" rel="stylesheet">
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-
-:root{
-  --bg:#f4f3f0;
-  --surface:#ffffff;
-  --border:#d8d5cf;
-  --border-strong:#b0aba2;
-  --text:#1a1916;
-  --text-2:#4a4742;
-  --text-3:#8a8780;
-  --accent:#2a2a2a;
-  --rule:#d0cdc7;
-}
-
-body{
-  font-family:'Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  min-height:100vh;
-  -webkit-font-smoothing:antialiased;
-}
-
-/* ── HEADER ── */
-.header{
-  background:var(--text);
-  color:#f4f3f0;
-  padding:0 2.5rem;
-  height:56px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  position:sticky;
-  top:0;
-  z-index:20;
-}
-.header-left{
-  display:flex;
-  align-items:baseline;
-  gap:14px;
-}
-.header-title{
-  font-family:'Noto Serif SC',serif;
-  font-size:18px;
-  font-weight:700;
-  letter-spacing:0.12em;
-  color:#f4f3f0;
-}
-.header-count{
-  font-size:12px;
-  color:#888;
-  letter-spacing:0.05em;
-}
-.add-btn{
-  display:flex;
-  align-items:center;
-  gap:6px;
-  padding:6px 16px;
-  background:#f4f3f0;
-  color:var(--text);
-  border:none;
-  border-radius:2px;
-  font-size:13px;
-  font-family:inherit;
-  font-weight:500;
-  cursor:pointer;
-  letter-spacing:0.04em;
-  transition:opacity 0.15s;
-}
-.add-btn:hover{opacity:0.85}
-
-/* ── CONTROLS ── */
-.controls{
-  border-bottom:1px solid var(--border);
-  background:var(--surface);
-  display:flex;
-  align-items:stretch;
-  gap:0;
-}
-.search-wrap{
-  flex:1;
-  display:flex;
-  align-items:center;
-  padding:0 1.5rem;
-  border-right:1px solid var(--border);
-  gap:10px;
-}
-.search-wrap svg{
-  width:15px;height:15px;
-  stroke:var(--text-3);
-  flex-shrink:0;
-}
-.search-wrap input{
-  flex:1;
-  border:none;
-  outline:none;
-  font-size:13px;
-  font-family:inherit;
-  color:var(--text);
-  background:transparent;
-  padding:13px 0;
-}
-.search-wrap input::placeholder{color:var(--text-3)}
-.tabs{
-  display:flex;
-  align-items:center;
-  padding:0 1.5rem;
-  gap:0;
-  overflow-x:auto;
-  scrollbar-width:none;
-}
-.tabs::-webkit-scrollbar{display:none}
-.tab{
-  padding:14px 14px;
-  font-size:12px;
-  font-weight:500;
-  letter-spacing:0.06em;
-  color:var(--text-3);
-  cursor:pointer;
-  border-bottom:2px solid transparent;
-  white-space:nowrap;
-  transition:color 0.15s,border-color 0.15s;
-  user-select:none;
-}
-.tab:hover{color:var(--text-2)}
-.tab.active{color:var(--text);border-bottom-color:var(--text)}
-.manage-tab{
-  padding:14px 14px;
-  font-size:12px;
-  color:var(--text-3);
-  cursor:pointer;
-  letter-spacing:0.04em;
-  border-left:1px solid var(--border);
-  margin-left:4px;
-  display:flex;align-items:center;gap:4px;
-}
-.manage-tab:hover{color:var(--text-2)}
-
-/* ── TABLE ── */
-.table-wrap{
-  padding:0 2.5rem 4rem;
-}
-.table{
-  width:100%;
-  border-collapse:collapse;
-  margin-top:0;
-}
-.table thead tr{
-  border-bottom:2px solid var(--text);
-}
-.table th{
-  text-align:left;
-  font-size:11px;
-  font-weight:700;
-  letter-spacing:0.1em;
-  color:var(--text-3);
-  padding:14px 12px 10px;
-  text-transform:uppercase;
-}
-.table th:first-child{padding-left:0}
-.table th:last-child{padding-right:0;text-align:right}
-
-.table tbody tr{
-  border-bottom:1px solid var(--rule);
-  cursor:pointer;
-  transition:background 0.1s;
-}
-.table tbody tr:hover{background:#f9f8f6}
-.table tbody tr:last-child{border-bottom:none}
-
-.table td{
-  padding:14px 12px;
-  vertical-align:top;
-}
-.table td:first-child{padding-left:0}
-.table td:last-child{padding-right:0;text-align:right}
-
-.td-num{
-  font-size:11px;
-  color:var(--text-3);
-  font-weight:500;
-  letter-spacing:0.04em;
-  width:40px;
-  padding-top:15px;
-}
-.td-cat{width:80px}
-.cat-badge{
-  display:inline-block;
-  font-size:11px;
-  font-weight:500;
-  letter-spacing:0.05em;
-  padding:3px 8px;
-  border:1px solid var(--border-strong);
-  border-radius:2px;
-  color:var(--text-2);
-  background:transparent;
-}
-.td-title{
-  font-size:15px;
-  font-weight:500;
-  color:var(--text);
-  line-height:1.4;
-}
-.td-preview{
-  font-size:12px;
-  color:var(--text-3);
-  margin-top:3px;
-  line-height:1.5;
-}
-.td-date{
-  font-size:11px;
-  color:var(--text-3);
-  letter-spacing:0.04em;
-  white-space:nowrap;
-  padding-top:15px;
-}
-.arrow{
-  font-size:16px;
-  color:var(--border-strong);
-  display:inline-block;
-  margin-left:8px;
-  transition:transform 0.15s,color 0.15s;
-}
-.table tbody tr:hover .arrow{transform:translateX(3px);color:var(--text)}
-
-/* ── EMPTY ── */
-.empty{
-  display:none;
-  text-align:center;
-  padding:5rem 0;
-  color:var(--text-3);
-  font-size:13px;
-  letter-spacing:0.05em;
-}
-
-/* ── OVERLAY & MODAL ── */
-.overlay{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.45);
-  z-index:100;
-  align-items:center;
-  justify-content:center;
-  padding:1.5rem;
-}
-.overlay.open{display:flex}
-.modal{
-  background:var(--surface);
-  width:100%;
-  max-width:480px;
-  max-height:90vh;
-  overflow-y:auto;
-  border:1px solid var(--border-strong);
-  border-radius:2px;
-  position:relative;
-}
-.modal-head{
-  padding:1.25rem 1.5rem;
-  border-bottom:1px solid var(--border);
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-}
-.modal-head h2{
-  font-size:14px;
-  font-weight:700;
-  letter-spacing:0.1em;
-  text-transform:uppercase;
-  color:var(--text);
-}
-.modal-close{
-  background:none;
-  border:none;
-  font-size:20px;
-  color:var(--text-3);
-  cursor:pointer;
-  line-height:1;
-  padding:2px 4px;
-}
-.modal-close:hover{color:var(--text)}
-.modal-body{padding:1.25rem 1.5rem}
-.field{margin-bottom:14px}
-.field label{
-  display:block;
-  font-size:11px;
-  font-weight:700;
-  letter-spacing:0.1em;
-  text-transform:uppercase;
-  color:var(--text-3);
-  margin-bottom:6px;
-}
-.field input,
-.field textarea,
-.field select{
-  width:100%;
-  padding:9px 12px;
-  border:1px solid var(--border);
-  border-radius:2px;
-  font-size:14px;
-  font-family:inherit;
-  color:var(--text);
-  background:var(--bg);
-  outline:none;
-  transition:border-color 0.15s;
-}
-.field input:focus,
-.field textarea:focus,
-.field select:focus{border-color:var(--text)}
-.field textarea{min-height:120px;resize:vertical;line-height:1.7}
-.modal-foot{
-  padding:1rem 1.5rem;
-  border-top:1px solid var(--border);
-  display:flex;
-  gap:8px;
-  justify-content:flex-end;
-}
-.modal-foot button{
-  padding:8px 20px;
-  border-radius:2px;
-  font-size:13px;
-  font-family:inherit;
-  font-weight:500;
-  cursor:pointer;
-  letter-spacing:0.04em;
-  border:1px solid var(--border-strong);
-  transition:all 0.15s;
-}
-.btn-primary{background:var(--text);color:#f4f3f0;border-color:var(--text)}
-.btn-primary:hover{background:#333}
-.btn-ghost{background:transparent;color:var(--text-2)}
-.btn-ghost:hover{background:var(--bg)}
-.btn-danger-ghost{background:transparent;color:#b03030;border-color:#d0a0a0}
-.btn-danger-ghost:hover{background:#fef0f0}
-
-/* ── DETAIL ── */
-.detail-meta{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  margin-bottom:14px;
-}
-.detail-title{
-  font-size:20px;
-  font-weight:700;
-  line-height:1.4;
-  margin-bottom:16px;
-  color:var(--text);
-}
-.detail-body{
-  font-size:14px;
-  line-height:1.85;
-  color:var(--text-2);
-  white-space:pre-wrap;
-  border-top:1px solid var(--rule);
-  padding-top:14px;
-}
-.detail-date{font-size:11px;color:var(--text-3);letter-spacing:0.05em;margin-top:14px}
-
-/* ── CAT MANAGE ── */
-.cat-row{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:10px 0;
-  border-bottom:1px solid var(--rule);
-  font-size:14px;
-  color:var(--text-2);
-}
-.cat-row:last-child{border-bottom:none}
-.cat-del{
-  background:none;border:none;
-  color:var(--text-3);font-size:16px;
-  cursor:pointer;
-  padding:2px 6px;
-}
-.cat-del:hover{color:#b03030}
-.cat-add-row{
-  display:flex;gap:8px;margin-top:12px;
-}
-.cat-add-row input{
-  flex:1;
-  padding:8px 12px;
-  border:1px solid var(--border);
-  border-radius:2px;
-  font-size:13px;
-  font-family:inherit;
-  outline:none;
-}
-.cat-add-row input:focus{border-color:var(--text)}
-.cat-add-row button{
-  padding:8px 16px;
-  background:var(--text);
-  color:#f4f3f0;
-  border:none;
-  border-radius:2px;
-  font-size:13px;
-  font-family:inherit;
-  cursor:pointer;
-}
-.cat-add-row button:hover{background:#333}
-
-/* ── TOAST ── */
-.toast{
-  position:fixed;
-  bottom:1.5rem;
-  left:50%;
-  transform:translateX(-50%) translateY(60px);
-  background:var(--text);
-  color:#f4f3f0;
-  padding:8px 20px;
-  border-radius:2px;
-  font-size:12px;
-  letter-spacing:0.06em;
-  z-index:999;
-  transition:transform 0.22s ease;
-  pointer-events:none;
-}
-.toast.show{transform:translateX(-50%) translateY(0)}
-
-@media(max-width:640px){
-  .header{padding:0 1rem}
-  .table-wrap{padding:0 1rem 3rem}
-  .td-preview{display:none}
-  .td-num{display:none}
-  .search-wrap{padding:0 1rem}
-  .tabs{padding:0 0.5rem}
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light">
+  <title>技能书</title>
+  <style>
+    *,*::before,*::after{box-sizing:border-box}
+    :root{--bg:#f4f3f0;--surface:#fff;--text:#1a1916;--muted:#77736c;--border:#d8d5cf;--strong:#aaa59c;--danger:#a73737;--shadow:0 16px 60px rgba(27,25,22,.12)}
+    html,body{margin:0;min-height:100%;font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+    button,input,select,textarea{font:inherit}
+    button{cursor:pointer}
+    [hidden]{display:none!important}
+    .auth-screen{min-height:100vh;display:grid;place-items:center;padding:24px;background:linear-gradient(180deg,#eeece7 0,#f7f6f3 100%)}
+    .auth-card{width:min(430px,100%);background:var(--surface);border:1px solid var(--border);padding:38px 34px;box-shadow:var(--shadow)}
+    .auth-kicker{font-size:11px;letter-spacing:.22em;color:var(--muted);margin-bottom:14px}
+    .auth-card h1{font-family:Georgia,"Noto Serif SC",serif;font-size:34px;margin:0 0 34px;letter-spacing:.08em}
+    .question{font-size:17px;font-weight:600;line-height:1.6;margin-bottom:13px}
+    .answer-input{width:100%;height:46px;border:1px solid var(--strong);background:#faf9f7;padding:0 13px;outline:none}
+    .answer-input:focus{border-color:var(--text);box-shadow:0 0 0 2px rgba(26,25,22,.08)}
+    .auth-btn{width:100%;height:46px;border:0;background:var(--text);color:#fff;margin-top:14px;font-weight:600;letter-spacing:.08em}
+    .auth-btn:disabled{opacity:.55;cursor:wait}
+    .auth-error{min-height:22px;margin-top:12px;color:var(--danger);font-size:13px;line-height:1.6}
+    .privacy-note{margin-top:22px;padding-top:18px;border-top:1px solid var(--border);font-size:12px;line-height:1.7;color:var(--muted)}
+    .topbar{height:58px;background:var(--text);color:#f6f5f2;padding:0 max(20px,calc((100vw - 1080px)/2));display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:20}
+    .brand{display:flex;align-items:baseline;gap:12px;min-width:0}
+    .brand-title{font-family:Georgia,"Noto Serif SC",serif;font-size:21px;font-weight:700;letter-spacing:.12em;white-space:nowrap}
+    .count{font-size:11px;color:#aaa8a3;white-space:nowrap}
+    .header-actions{display:flex;align-items:center;gap:8px}
+    .cloud-state{font-size:11px;color:#aaa8a3;margin-right:4px;white-space:nowrap}
+    .header-btn{height:32px;border:1px solid #55534f;background:transparent;color:#eee;padding:0 12px;font-size:12px;border-radius:2px}
+    .header-btn:hover{border-color:#eee}
+    .header-btn.primary{background:#f4f3f0;color:#1a1916;border-color:#f4f3f0;font-weight:600}
+    .container{width:min(1080px,100%);margin:0 auto;padding:28px 20px 64px}
+    .migration{display:flex;align-items:center;justify-content:space-between;gap:16px;background:#fff;border:1px solid var(--border);padding:14px 16px;margin-bottom:18px;font-size:13px;line-height:1.6}
+    .migration strong{display:block;margin-bottom:2px}
+    .migration button{border:0;background:var(--text);color:#fff;padding:9px 14px;white-space:nowrap}
+    .controls{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;margin-bottom:18px}
+    .search{position:relative;width:min(320px,100%)}
+    .search input{width:100%;height:40px;border:1px solid var(--border);background:#fff;padding:0 14px 0 38px;outline:none}
+    .search input:focus{border-color:var(--text)}
+    .search svg{position:absolute;left:13px;top:12px;width:16px;height:16px;stroke:var(--muted)}
+    .tabs{display:flex;flex-wrap:wrap;gap:5px;flex:1}
+    .tab{border:1px solid transparent;background:transparent;color:var(--muted);padding:8px 10px;font-size:12px}
+    .tab:hover{color:var(--text)}
+    .tab.active{border-color:var(--strong);background:#fff;color:var(--text);font-weight:600}
+    .tab.manage{margin-left:auto;border-color:var(--border)}
+    .table-shell{background:#fff;border-top:2px solid var(--text);border-bottom:1px solid var(--border);overflow-x:auto}
+    table{width:100%;border-collapse:collapse;min-width:650px}
+    th{text-align:left;padding:11px 14px;border-bottom:1px solid var(--border);font-size:10px;letter-spacing:.14em;color:var(--muted);font-weight:600}
+    td{padding:15px 14px;border-bottom:1px solid #e7e4de;vertical-align:top}
+    tbody tr{cursor:pointer;transition:background .12s}
+    tbody tr:hover{background:#faf9f7}
+    tbody tr:last-child td{border-bottom:0}
+    .num{width:56px;color:#99958e;font-size:11px;padding-top:18px}
+    .cat{width:112px}
+    .badge{display:inline-block;border:1px solid var(--strong);padding:3px 8px;font-size:11px;letter-spacing:.04em;color:#4f4c47;white-space:nowrap}
+    .skill-title{font-size:15px;font-weight:600;line-height:1.5}
+    .preview{font-size:12px;color:var(--muted);line-height:1.55;margin-top:3px;max-width:680px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .date{width:124px;text-align:right;color:#8d8982;font-size:11px;white-space:nowrap;padding-top:18px}
+    .empty{text-align:center;background:#fff;padding:74px 20px;color:#99958e;font-size:13px;border-bottom:1px solid var(--border)}
+    .overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.48);padding:20px;z-index:100}
+    .overlay.open{display:flex}
+    .modal{width:min(590px,100%);max-height:90vh;overflow:auto;background:#fff;box-shadow:var(--shadow)}
+    .modal-head{display:flex;align-items:center;justify-content:space-between;padding:20px 22px;border-bottom:1px solid var(--border)}
+    .modal-head h2{font-size:17px;margin:0}
+    .close{width:34px;height:34px;border:0;background:transparent;font-size:24px;color:var(--muted)}
+    .modal-body{padding:22px}
+    .field{margin-bottom:18px}
+    .field:last-child{margin-bottom:0}
+    label{display:block;font-size:12px;font-weight:600;margin-bottom:7px}
+    .field input,.field select,.field textarea{width:100%;border:1px solid var(--border);background:#faf9f7;padding:10px 11px;outline:none}
+    .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--text)}
+    .field textarea{min-height:180px;resize:vertical;line-height:1.7}
+    .modal-foot{display:flex;justify-content:flex-end;gap:8px;padding:15px 22px;border-top:1px solid var(--border);background:#faf9f7}
+    .btn{border:1px solid var(--border);background:#fff;color:var(--text);padding:9px 15px}
+    .btn.primary{background:var(--text);color:#fff;border-color:var(--text)}
+    .btn.danger{color:var(--danger);border-color:#d9b2b2;margin-right:auto}
+    .detail-category{font-size:11px;color:var(--muted);letter-spacing:.14em;margin-bottom:14px}
+    .detail-title{font-family:Georgia,"Noto Serif SC",serif;font-size:25px;line-height:1.45;font-weight:700;margin-bottom:20px}
+    .detail-body{white-space:pre-wrap;font-size:14px;line-height:1.9;color:#393631;min-height:50px}
+    .detail-date{font-size:11px;color:var(--muted);margin-top:24px;padding-top:14px;border-top:1px solid var(--border)}
+    .category-row{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e6e3dd;padding:11px 2px;font-size:13px}
+    .category-row button{border:0;background:transparent;color:var(--danger);font-size:18px}
+    .category-add{display:flex;gap:8px;margin-top:16px}
+    .category-add input{flex:1;border:1px solid var(--border);padding:9px 11px;outline:none}
+    .category-add button{border:0;background:var(--text);color:#fff;padding:0 16px}
+    .toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,70px);background:var(--text);color:#fff;padding:10px 17px;font-size:12px;opacity:0;transition:.2s;z-index:300;pointer-events:none}
+    .toast.show{transform:translate(-50%,0);opacity:1}
+    .spinner{display:inline-block;width:12px;height:12px;border:2px solid #aaa;border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite;margin-right:6px;vertical-align:-2px}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    @media(max-width:760px){.topbar{padding:0 14px}.count,.cloud-state{display:none}.header-btn{padding:0 9px}.container{padding:18px 12px 48px}.controls{flex-direction:column}.search{width:100%}.tabs{width:100%}.tab.manage{margin-left:0}.migration{align-items:flex-start;flex-direction:column}.migration button{width:100%}.auth-card{padding:32px 24px}.preview{display:none}}
+  </style>
 </head>
 <body>
-
-<!-- HEADER -->
-<header class="header">
-  <div class="header-left">
-    <span class="header-title">技能书</span>
-    <span class="header-count" id="headerCount"></span>
-  </div>
-  <button class="add-btn" onclick="openAdd()">＋ 新增技能</button>
-</header>
-
-<!-- CONTROLS -->
-<div class="controls">
-  <div class="search-wrap">
-    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-    </svg>
-    <input type="text" id="searchInput" placeholder="搜索技能…" oninput="render()">
-  </div>
-  <div class="tabs" id="tabsRow"></div>
-</div>
-
-<!-- TABLE -->
-<div class="table-wrap">
-  <table class="table" id="mainTable">
-    <thead>
-      <tr>
-        <th style="width:40px">#</th>
-        <th style="width:90px">分类</th>
-        <th>技能</th>
-        <th style="width:100px;text-align:right">收录日期</th>
-      </tr>
-    </thead>
-    <tbody id="tableBody"></tbody>
-  </table>
-  <div class="empty" id="emptyState">— 暂无记录 —</div>
-</div>
-
-<!-- ADD MODAL -->
-<div class="overlay" id="addOverlay">
-  <div class="modal">
-    <div class="modal-head">
-      <h2>新增技能</h2>
-      <button class="modal-close" onclick="closeAdd()">×</button>
+  <section id="authScreen" class="auth-screen">
+    <div class="auth-card">
+      <div class="auth-kicker">PRIVATE SKILL BOOK</div>
+      <h1>技能书</h1>
+      <form id="loginForm">
+        <div class="question">你要进这个网站干什么？</div>
+        <input id="answerInput" class="answer-input" type="password" autocomplete="current-password" placeholder="输入你的答案" required>
+        <button id="loginBtn" class="auth-btn" type="submit">进入技能书</button>
+        <div id="authError" class="auth-error" role="alert"></div>
+      </form>
+      <div class="privacy-note">答案只用于云端身份验证，不会保存在这个网页文件中。登录成功后，手机和电脑读取同一份云端内容。</div>
     </div>
-    <div class="modal-body">
-      <div class="field">
-        <label>技能名称 *</label>
-        <input type="text" id="addTitle" placeholder="简洁明了地描述这项技能">
+  </section>
+
+  <main id="app" hidden>
+    <header class="topbar">
+      <div class="brand"><span class="brand-title">技能书</span><span id="count" class="count">0 条技能</span></div>
+      <div class="header-actions">
+        <span id="cloudState" class="cloud-state">云端已连接</span>
+        <button class="header-btn" onclick="exportBackup()">备份</button>
+        <button class="header-btn" onclick="logout()">退出</button>
+        <button class="header-btn primary" onclick="openAdd()">＋ 新增技能</button>
       </div>
-      <div class="field">
-        <label>分类</label>
-        <select id="addCat"></select>
+    </header>
+
+    <div class="container">
+      <section id="migrationBanner" class="migration" hidden>
+        <div><strong>检测到这台设备中的旧版技能数据</strong><span id="migrationText"></span></div>
+        <button id="migrationBtn" onclick="migrateLocalData()">迁移到云端</button>
+      </section>
+
+      <div class="controls">
+        <div class="search">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>
+          <input id="searchInput" placeholder="搜索技能…" oninput="render()">
+        </div>
+        <div id="tabs" class="tabs"></div>
       </div>
-      <div class="field">
-        <label>详细说明</label>
-        <textarea id="addDesc" placeholder="步骤、要点、注意事项…"></textarea>
+
+      <div id="tableShell" class="table-shell">
+        <table>
+          <thead><tr><th>#</th><th>分类</th><th>技能</th><th style="text-align:right">收录日期</th></tr></thead>
+          <tbody id="tableBody"></tbody>
+        </table>
       </div>
+      <div id="empty" class="empty" hidden>— 暂无记录 —</div>
     </div>
-    <div class="modal-foot">
-      <button class="btn-ghost" onclick="closeAdd()">取消</button>
-      <button class="btn-primary" onclick="saveAdd()">保存</button>
+  </main>
+
+  <div id="addOverlay" class="overlay">
+    <div class="modal">
+      <div class="modal-head"><h2>新增技能</h2><button class="close" onclick="closeOverlay('addOverlay')">×</button></div>
+      <div class="modal-body">
+        <div class="field"><label>技能名称 *</label><input id="addTitle" placeholder="简洁明了地描述这项技能"></div>
+        <div class="field"><label>分类</label><select id="addCategory"></select></div>
+        <div class="field"><label>详细说明</label><textarea id="addDescription" placeholder="步骤、要点、注意事项……"></textarea></div>
+      </div>
+      <div class="modal-foot"><button class="btn" onclick="closeOverlay('addOverlay')">取消</button><button id="addSaveBtn" class="btn primary" onclick="saveAdd()">保存</button></div>
     </div>
   </div>
-</div>
 
-<!-- DETAIL MODAL -->
-<div class="overlay" id="detailOverlay">
-  <div class="modal">
-    <div class="modal-head">
-      <h2 id="detailHeadCat"></h2>
-      <button class="modal-close" onclick="closeDetail()">×</button>
-    </div>
-    <div class="modal-body" id="detailView">
-      <div class="detail-meta">
-        <div class="cat-badge" id="detailCatBadge"></div>
+  <div id="detailOverlay" class="overlay">
+    <div class="modal">
+      <div class="modal-head"><h2>技能详情</h2><button class="close" onclick="closeDetail()">×</button></div>
+      <div id="detailView" class="modal-body">
+        <div id="detailCategory" class="detail-category"></div>
+        <div id="detailTitle" class="detail-title"></div>
+        <div id="detailDescription" class="detail-body"></div>
+        <div id="detailDate" class="detail-date"></div>
       </div>
-      <div class="detail-title" id="detailTitle"></div>
-      <div class="detail-body" id="detailBody"></div>
-      <div class="detail-date" id="detailDate"></div>
-    </div>
-    <div class="modal-body" id="editView" style="display:none">
-      <div class="field">
-        <label>技能名称</label>
-        <input type="text" id="editTitle">
+      <div id="editView" class="modal-body" hidden>
+        <div class="field"><label>技能名称 *</label><input id="editTitle"></div>
+        <div class="field"><label>分类</label><select id="editCategory"></select></div>
+        <div class="field"><label>详细说明</label><textarea id="editDescription"></textarea></div>
       </div>
-      <div class="field">
-        <label>分类</label>
-        <select id="editCat"></select>
-      </div>
-      <div class="field">
-        <label>详细说明</label>
-        <textarea id="editDesc"></textarea>
-      </div>
-    </div>
-    <div class="modal-foot" id="detailFoot">
-      <button class="btn-danger-ghost" onclick="deleteSkill()">删除</button>
-      <button class="btn-ghost" onclick="openEdit()">编辑</button>
-      <button class="btn-ghost" onclick="closeDetail()">关闭</button>
-    </div>
-    <div class="modal-foot" id="editFoot" style="display:none">
-      <button class="btn-ghost" onclick="cancelEdit()">返回</button>
-      <button class="btn-primary" onclick="saveEdit()">保存修改</button>
+      <div id="detailFoot" class="modal-foot"><button class="btn danger" onclick="deleteSkill()">删除</button><button class="btn" onclick="openEdit()">编辑</button><button class="btn" onclick="closeDetail()">关闭</button></div>
+      <div id="editFoot" class="modal-foot" hidden><button class="btn" onclick="cancelEdit()">返回</button><button id="editSaveBtn" class="btn primary" onclick="saveEdit()">保存修改</button></div>
     </div>
   </div>
-</div>
 
-<!-- CAT MODAL -->
-<div class="overlay" id="catOverlay">
-  <div class="modal">
-    <div class="modal-head">
-      <h2>管理分类</h2>
-      <button class="modal-close" onclick="closeCat()">×</button>
-    </div>
-    <div class="modal-body">
-      <div id="catList"></div>
-      <div class="cat-add-row">
-        <input type="text" id="newCatInput" placeholder="新分类名称">
-        <button onclick="addCat()">添加</button>
+  <div id="categoryOverlay" class="overlay">
+    <div class="modal">
+      <div class="modal-head"><h2>管理分类</h2><button class="close" onclick="closeOverlay('categoryOverlay')">×</button></div>
+      <div class="modal-body">
+        <div id="categoryList"></div>
+        <div class="category-add"><input id="newCategory" placeholder="新分类名称"><button onclick="addCategory()">添加</button></div>
       </div>
-    </div>
-    <div class="modal-foot">
-      <button class="btn-primary" onclick="closeCat()">完成</button>
+      <div class="modal-foot"><button class="btn primary" onclick="closeOverlay('categoryOverlay')">完成</button></div>
     </div>
   </div>
-</div>
 
-<div class="toast" id="toast"></div>
+  <div id="toast" class="toast"></div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = 'https://wmbbzdelhlqwozunoifa.supabase.co';
+    const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_s9iJyUj8QwdUWWxiPTtrFA_VsaN2s68';
+    const OWNER_EMAIL = 'skillbook-owner@example.com';
+    const DEFAULT_CATEGORIES = ['生活','厨房','收纳','健康','手工','数码','其他'];
+    const db = supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false }
+    });
 
-<script>
-// ── DATA ──────────────────────────────────────────────
-const DEFAULT_SKILLS = [
-  {id:1,title:'西红柿炒蛋——先炒蛋再放番茄',cat:'厨房',desc:'鸡蛋先炒熟盛出，另起锅炒番茄出汁后再放回蛋。全程大火，出锅前加少量糖提鲜。两步分开炒，口感明显更嫩滑。',date:'2025-03-12'},
-  {id:2,title:'衣物沾油污：先用淀粉吸油',cat:'生活',desc:'油渍刚沾上时不要用水冲。撒少量面粉或淀粉，用手轻压5分钟吸油，再刷掉淀粉，最后正常清洗。去污率远高于直接用水。',date:'2025-04-01'},
-  {id:3,title:'衣服竖向叠放节省空间',cat:'收纳',desc:'将叠好的衣服像文件夹一样竖着放入抽屉，从正上方就能看到所有衣服，取用不会带乱其他。比平铺叠放节省约40%空间。',date:'2025-04-18'},
-  {id:4,title:'睡前4个拉伸动作',cat:'健康',desc:'颈部左右转动 × 10次\n肩膀向前绕圈 × 10次\n大腿前侧拉伸（单腿站立，另一腿向后弯曲手抓脚踝）× 30秒\n脊柱躺地扭转 × 每侧30秒\n\n每晚睡前做完，长期坚持有助改善睡眠深度。',date:'2025-05-02'},
-];
-const DEFAULT_CATS = ['全部','生活','厨房','收纳','健康','手工','数码','其他'];
+    let session = null;
+    let skills = [];
+    let categories = [];
+    let activeCategory = '全部';
+    let currentId = null;
+    let toastTimer = null;
 
-function load(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch{return d}}
-function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
+    const $ = id => document.getElementById(id);
+    const today = () => new Date().toISOString().slice(0,10);
+    const normalizeText = value => String(value ?? '').trim();
+    const escapeHtml = value => String(value ?? '').replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
 
-let skills  = load('sb_skills', DEFAULT_SKILLS);
-let cats    = load('sb_cats',   DEFAULT_CATS);
-let tab     = '全部';
-let current = null;
+    function toast(message){
+      const el = $('toast');
+      el.textContent = message;
+      el.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => el.classList.remove('show'), 1900);
+    }
 
-// ── UTILS ─────────────────────────────────────────────
-function today(){return new Date().toISOString().slice(0,10)}
-function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800)}
+    function setCloudState(text, loading=false){
+      $('cloudState').innerHTML = loading ? '<span class="spinner"></span>'+escapeHtml(text) : escapeHtml(text);
+    }
 
-// ── TABS ──────────────────────────────────────────────
-function buildTabs(){
-  const row = document.getElementById('tabsRow');
-  row.innerHTML = '';
-  cats.forEach(c=>{
-    const d=document.createElement('div');
-    d.className='tab'+(c===tab?' active':'');
-    d.textContent=c;
-    d.onclick=()=>{tab=c;buildTabs();render()};
-    row.appendChild(d);
-  });
-  const m=document.createElement('div');
-  m.className='manage-tab';
-  m.innerHTML='⚙ 分类';
-  m.onclick=openCat;
-  row.appendChild(m);
-}
+    function setButtonLoading(button, loading, text){
+      button.disabled = loading;
+      if (!button.dataset.original) button.dataset.original = button.textContent;
+      button.textContent = loading ? text : button.dataset.original;
+    }
 
-// ── RENDER ────────────────────────────────────────────
-function render(){
-  const q=document.getElementById('searchInput').value.trim().toLowerCase();
-  const filtered=skills.filter(s=>{
-    const mt=tab==='全部'||s.cat===tab;
-    const mq=!q||s.title.toLowerCase().includes(q)||(s.desc||'').toLowerCase().includes(q);
-    return mt&&mq;
-  });
+    async function init(){
+      const { data, error } = await db.auth.getSession();
+      if (error) console.error(error);
+      session = data?.session ?? null;
+      if (session) await enterApp();
+      else showLogin();
 
-  document.getElementById('headerCount').textContent=skills.length+' 条技能';
+      db.auth.onAuthStateChange((_event, newSession) => {
+        session = newSession;
+        if (!newSession) showLogin();
+      });
+    }
 
-  const tbody=document.getElementById('tableBody');
-  const empty=document.getElementById('emptyState');
-  const tbl=document.getElementById('mainTable');
+    function showLogin(){
+      $('app').hidden = true;
+      $('authScreen').hidden = false;
+      $('answerInput').value = '';
+      $('authError').textContent = '';
+      setTimeout(() => $('answerInput').focus(), 50);
+    }
 
-  if(filtered.length===0){
-    tbl.style.display='none';
-    empty.style.display='block';
-    return;
-  }
-  tbl.style.display='table';
-  empty.style.display='none';
+    async function enterApp(){
+      $('authScreen').hidden = true;
+      $('app').hidden = false;
+      setCloudState('正在同步', true);
+      await loadCloudData();
+      detectLocalData();
+    }
 
-  tbody.innerHTML=filtered.map((s,i)=>`
-    <tr onclick="openDetail(${s.id})">
-      <td class="td-num">${String(i+1).padStart(2,'0')}</td>
-      <td class="td-cat"><span class="cat-badge">${s.cat}</span></td>
-      <td>
-        <div class="td-title">${s.title}</div>
-        ${s.desc?`<div class="td-preview">${s.desc.replace(/\n/g,' ').slice(0,60)}${s.desc.length>60?'…':''}</div>`:''}
-      </td>
-      <td class="td-date">${s.date}<span class="arrow">›</span></td>
-    </tr>`).join('');
-}
+    $('loginForm').addEventListener('submit', async event => {
+      event.preventDefault();
+      const answer = $('answerInput').value;
+      const button = $('loginBtn');
+      $('authError').textContent = '';
+      if (!answer){ $('authError').textContent = '请输入答案。'; return; }
+      setButtonLoading(button, true, '正在验证…');
+      const { data, error } = await db.auth.signInWithPassword({ email: OWNER_EMAIL, password: answer });
+      setButtonLoading(button, false, '正在验证…');
+      if (error || !data.session){
+        $('authError').textContent = '答案不正确，请重新输入。';
+        $('answerInput').select();
+        return;
+      }
+      session = data.session;
+      await enterApp();
+    });
 
-// ── SELECT FILL ───────────────────────────────────────
-function fillSel(id,selected){
-  const el=document.getElementById(id);
-  el.innerHTML=cats.filter(c=>c!=='全部')
-    .map(c=>`<option${c===selected?' selected':''}>${c}</option>`).join('');
-}
+    async function logout(){
+      await db.auth.signOut();
+      session = null;
+      showLogin();
+    }
 
-// ── ADD ───────────────────────────────────────────────
-function openAdd(){
-  document.getElementById('addTitle').value='';
-  document.getElementById('addDesc').value='';
-  fillSel('addCat', cats[1]||'其他');
-  document.getElementById('addOverlay').classList.add('open');
-  setTimeout(()=>document.getElementById('addTitle').focus(),60);
-}
-function closeAdd(){document.getElementById('addOverlay').classList.remove('open')}
-function saveAdd(){
-  const title=document.getElementById('addTitle').value.trim();
-  if(!title){document.getElementById('addTitle').focus();return}
-  skills.unshift({id:Date.now(),title,cat:document.getElementById('addCat').value,
-    desc:document.getElementById('addDesc').value.trim(),date:today()});
-  save('sb_skills',skills);closeAdd();render();toast('已收录');
-}
+    async function loadCloudData(){
+      try{
+        const [skillsResult, categoriesResult] = await Promise.all([
+          db.from('skills').select('id,title,category,description,recorded_on,created_at,updated_at').order('recorded_on',{ascending:false}).order('created_at',{ascending:false}),
+          db.from('skill_categories').select('id,name,sort_order').order('sort_order',{ascending:true}).order('created_at',{ascending:true})
+        ]);
+        if (skillsResult.error) throw skillsResult.error;
+        if (categoriesResult.error) throw categoriesResult.error;
+        skills = skillsResult.data ?? [];
+        categories = (categoriesResult.data ?? []).map(row => row.name);
+        if (!categories.length) await seedCategories();
+        buildTabs();
+        render();
+        setCloudState('云端已同步');
+      }catch(error){
+        console.error(error);
+        setCloudState('同步失败');
+        toast('云端同步失败，请刷新重试');
+      }
+    }
 
-// ── DETAIL ────────────────────────────────────────────
-function openDetail(id){
-  current=id;
-  const s=skills.find(x=>x.id===id);if(!s)return;
-  document.getElementById('detailHeadCat').textContent=s.cat.toUpperCase();
-  document.getElementById('detailCatBadge').textContent=s.cat;
-  document.getElementById('detailTitle').textContent=s.title;
-  document.getElementById('detailBody').textContent=s.desc||'（暂无说明）';
-  document.getElementById('detailDate').textContent='收录于 '+s.date;
-  document.getElementById('detailView').style.display='block';
-  document.getElementById('editView').style.display='none';
-  document.getElementById('detailFoot').style.display='flex';
-  document.getElementById('editFoot').style.display='none';
-  document.getElementById('detailOverlay').classList.add('open');
-}
-function closeDetail(){document.getElementById('detailOverlay').classList.remove('open');current=null}
+    async function seedCategories(){
+      const rows = DEFAULT_CATEGORIES.map((name,index) => ({ name, sort_order:index }));
+      const { error } = await db.from('skill_categories').insert(rows);
+      if (error) throw error;
+      categories = [...DEFAULT_CATEGORIES];
+    }
 
-// ── EDIT ──────────────────────────────────────────────
-function openEdit(){
-  const s=skills.find(x=>x.id===current);if(!s)return;
-  document.getElementById('editTitle').value=s.title;
-  document.getElementById('editDesc').value=s.desc||'';
-  fillSel('editCat',s.cat);
-  document.getElementById('detailView').style.display='none';
-  document.getElementById('editView').style.display='block';
-  document.getElementById('detailFoot').style.display='none';
-  document.getElementById('editFoot').style.display='flex';
-}
-function cancelEdit(){
-  document.getElementById('editView').style.display='none';
-  document.getElementById('detailView').style.display='block';
-  document.getElementById('detailFoot').style.display='flex';
-  document.getElementById('editFoot').style.display='none';
-}
-function saveEdit(){
-  const s=skills.find(x=>x.id===current);if(!s)return;
-  s.title=document.getElementById('editTitle').value.trim()||s.title;
-  s.cat=document.getElementById('editCat').value;
-  s.desc=document.getElementById('editDesc').value.trim();
-  save('sb_skills',skills);closeDetail();render();toast('已更新');
-}
+    function buildTabs(){
+      if (activeCategory !== '全部' && !categories.includes(activeCategory)) activeCategory = '全部';
+      const items = ['全部', ...categories];
+      $('tabs').innerHTML = items.map(name => `<button class="tab ${name===activeCategory?'active':''}" onclick="selectCategory('${escapeHtml(name).replace(/'/g,"\\'")}')">${escapeHtml(name)}</button>`).join('') + '<button class="tab manage" onclick="openCategories()">⚙ 分类</button>';
+      fillCategorySelect('addCategory');
+      fillCategorySelect('editCategory');
+    }
 
-// ── DELETE ────────────────────────────────────────────
-function deleteSkill(){
-  if(!current||!confirm('确定删除这条技能？'))return;
-  skills=skills.filter(x=>x.id!==current);
-  save('sb_skills',skills);closeDetail();render();toast('已删除');
-}
+    function selectCategory(name){ activeCategory = name; buildTabs(); render(); }
 
-// ── CATEGORIES ────────────────────────────────────────
-function openCat(){renderCatList();document.getElementById('newCatInput').value='';document.getElementById('catOverlay').classList.add('open')}
-function closeCat(){document.getElementById('catOverlay').classList.remove('open');buildTabs();render()}
-function renderCatList(){
-  document.getElementById('catList').innerHTML=
-    cats.filter(c=>c!=='全部').map(c=>`
-      <div class="cat-row">
-        <span>${c}</span>
-        <button class="cat-del" onclick="removeCat('${c}')">×</button>
-      </div>`).join('');
-}
-function addCat(){
-  const v=document.getElementById('newCatInput').value.trim();
-  if(!v||cats.includes(v)){toast(v?'分类已存在':'请输入名称');return}
-  cats.push(v);save('sb_cats',cats);renderCatList();
-  document.getElementById('newCatInput').value='';toast('分类已添加');
-}
-function removeCat(cat){
-  const used=skills.some(s=>s.cat===cat);
-  if(used&&!confirm(`「${cat}」下还有技能，删除后将移入「其他」。确认？`))return;
-  if(used)skills.forEach(s=>{if(s.cat===cat)s.cat='其他'});
-  if(tab===cat)tab='全部';
-  cats=cats.filter(c=>c!==cat);
-  save('sb_cats',cats);save('sb_skills',skills);renderCatList();toast('已删除');
-}
+    function fillCategorySelect(id, selected){
+      const list = categories.length ? categories : DEFAULT_CATEGORIES;
+      $(id).innerHTML = list.map(name => `<option value="${escapeHtml(name)}" ${name===selected?'selected':''}>${escapeHtml(name)}</option>`).join('');
+    }
 
-// ── KEYBOARD ──────────────────────────────────────────
-document.addEventListener('keydown',e=>{
-  if(e.key==='Escape'){closeAdd();closeDetail();closeCat()}
-});
+    function render(){
+      const query = normalizeText($('searchInput').value).toLowerCase();
+      const filtered = skills.filter(skill => {
+        const categoryMatch = activeCategory === '全部' || skill.category === activeCategory;
+        const queryMatch = !query || normalizeText(skill.title).toLowerCase().includes(query) || normalizeText(skill.description).toLowerCase().includes(query);
+        return categoryMatch && queryMatch;
+      });
+      $('count').textContent = `${skills.length} 条技能`;
+      $('tableBody').innerHTML = filtered.map((skill,index) => `
+        <tr onclick="openDetail(${Number(skill.id)})">
+          <td class="num">${String(index+1).padStart(2,'0')}</td>
+          <td class="cat"><span class="badge">${escapeHtml(skill.category)}</span></td>
+          <td><div class="skill-title">${escapeHtml(skill.title)}</div>${skill.description?`<div class="preview">${escapeHtml(skill.description.replace(/\n/g,' '))}</div>`:''}</td>
+          <td class="date">${escapeHtml(skill.recorded_on || '')}　›</td>
+        </tr>`).join('');
+      const isEmpty = filtered.length === 0;
+      $('tableShell').hidden = isEmpty;
+      $('empty').hidden = !isEmpty;
+    }
 
-// ── INIT ──────────────────────────────────────────────
-buildTabs();render();
-</script>
+    function openOverlay(id){ $(id).classList.add('open'); }
+    function closeOverlay(id){ $(id).classList.remove('open'); }
+
+    function openAdd(){
+      $('addTitle').value = '';
+      $('addDescription').value = '';
+      fillCategorySelect('addCategory', categories[0] || '其他');
+      openOverlay('addOverlay');
+      setTimeout(() => $('addTitle').focus(), 40);
+    }
+
+    async function saveAdd(){
+      const title = normalizeText($('addTitle').value);
+      if (!title){ $('addTitle').focus(); toast('请填写技能名称'); return; }
+      const button = $('addSaveBtn');
+      setButtonLoading(button,true,'保存中…');
+      const payload = { title, category:$('addCategory').value || '其他', description:normalizeText($('addDescription').value), recorded_on:today() };
+      const { data, error } = await db.from('skills').insert(payload).select('id,title,category,description,recorded_on,created_at,updated_at').single();
+      setButtonLoading(button,false,'保存中…');
+      if (error){ console.error(error); toast('保存失败，请重试'); return; }
+      skills.unshift(data);
+      closeOverlay('addOverlay');
+      render();
+      toast('已保存到云端');
+    }
+
+    function openDetail(id){
+      const skill = skills.find(item => Number(item.id) === Number(id));
+      if (!skill) return;
+      currentId = Number(id);
+      $('detailCategory').textContent = skill.category;
+      $('detailTitle').textContent = skill.title;
+      $('detailDescription').textContent = skill.description || '（暂无说明）';
+      $('detailDate').textContent = `收录于 ${skill.recorded_on || ''}`;
+      $('detailView').hidden = false;
+      $('editView').hidden = true;
+      $('detailFoot').hidden = false;
+      $('editFoot').hidden = true;
+      openOverlay('detailOverlay');
+    }
+
+    function closeDetail(){ closeOverlay('detailOverlay'); currentId = null; }
+
+    function openEdit(){
+      const skill = skills.find(item => Number(item.id) === currentId);
+      if (!skill) return;
+      $('editTitle').value = skill.title;
+      $('editDescription').value = skill.description || '';
+      fillCategorySelect('editCategory', skill.category);
+      $('detailView').hidden = true;
+      $('editView').hidden = false;
+      $('detailFoot').hidden = true;
+      $('editFoot').hidden = false;
+    }
+
+    function cancelEdit(){
+      $('detailView').hidden = false;
+      $('editView').hidden = true;
+      $('detailFoot').hidden = false;
+      $('editFoot').hidden = true;
+    }
+
+    async function saveEdit(){
+      const skill = skills.find(item => Number(item.id) === currentId);
+      if (!skill) return;
+      const title = normalizeText($('editTitle').value);
+      if (!title){ $('editTitle').focus(); toast('请填写技能名称'); return; }
+      const button = $('editSaveBtn');
+      setButtonLoading(button,true,'保存中…');
+      const payload = { title, category:$('editCategory').value || '其他', description:normalizeText($('editDescription').value), updated_at:new Date().toISOString() };
+      const { data, error } = await db.from('skills').update(payload).eq('id',currentId).select('id,title,category,description,recorded_on,created_at,updated_at').single();
+      setButtonLoading(button,false,'保存中…');
+      if (error){ console.error(error); toast('修改失败，请重试'); return; }
+      const index = skills.findIndex(item => Number(item.id) === currentId);
+      skills[index] = data;
+      closeDetail();
+      render();
+      toast('修改已同步');
+    }
+
+    async function deleteSkill(){
+      if (!currentId || !confirm('确定删除这条技能？删除后无法恢复。')) return;
+      const id = currentId;
+      const { error } = await db.from('skills').delete().eq('id',id);
+      if (error){ console.error(error); toast('删除失败，请重试'); return; }
+      skills = skills.filter(item => Number(item.id) !== id);
+      closeDetail();
+      render();
+      toast('已从云端删除');
+    }
+
+    function openCategories(){ renderCategoryList(); openOverlay('categoryOverlay'); setTimeout(()=>$('newCategory').focus(),40); }
+
+    function renderCategoryList(){
+      $('categoryList').innerHTML = categories.map(name => `<div class="category-row"><span>${escapeHtml(name)}</span><button title="删除分类" onclick="removeCategory('${escapeHtml(name).replace(/'/g,"\\'")}')">×</button></div>`).join('');
+    }
+
+    async function addCategory(){
+      const name = normalizeText($('newCategory').value);
+      if (!name){ toast('请输入分类名称'); return; }
+      if (name === '全部' || categories.includes(name)){ toast('这个分类已经存在'); return; }
+      const { error } = await db.from('skill_categories').insert({ name, sort_order:categories.length });
+      if (error){ console.error(error); toast('添加分类失败'); return; }
+      categories.push(name);
+      $('newCategory').value = '';
+      renderCategoryList();
+      buildTabs();
+      toast('分类已添加');
+    }
+
+    async function ensureOtherCategory(){
+      if (categories.includes('其他')) return;
+      const { error } = await db.from('skill_categories').insert({name:'其他',sort_order:categories.length});
+      if (error && error.code !== '23505') throw error;
+      categories.push('其他');
+    }
+
+    async function removeCategory(name){
+      if (name === '其他'){ toast('“其他”是保底分类，不能删除'); return; }
+      const usedCount = skills.filter(item => item.category === name).length;
+      if (usedCount && !confirm(`“${name}”中还有 ${usedCount} 条技能。删除分类后，这些技能会移到“其他”。继续吗？`)) return;
+      if (!usedCount && !confirm(`确定删除分类“${name}”？`)) return;
+      try{
+        if (usedCount){
+          await ensureOtherCategory();
+          const { error:updateError } = await db.from('skills').update({category:'其他',updated_at:new Date().toISOString()}).eq('category',name);
+          if (updateError) throw updateError;
+          skills = skills.map(item => item.category === name ? {...item,category:'其他'} : item);
+        }
+        const { error } = await db.from('skill_categories').delete().eq('name',name);
+        if (error) throw error;
+        categories = categories.filter(item => item !== name);
+        if (activeCategory === name) activeCategory = '全部';
+        renderCategoryList(); buildTabs(); render(); toast('分类已删除');
+      }catch(error){ console.error(error); toast('删除分类失败'); }
+    }
+
+    function readOldData(){
+      try{
+        const rawSkills = localStorage.getItem('sb_skills');
+        const rawCategories = localStorage.getItem('sb_cats');
+        const oldSkills = rawSkills ? JSON.parse(rawSkills) : [];
+        const oldCategories = rawCategories ? JSON.parse(rawCategories) : [];
+        return {oldSkills:Array.isArray(oldSkills)?oldSkills:[],oldCategories:Array.isArray(oldCategories)?oldCategories:[]};
+      }catch{ return {oldSkills:[],oldCategories:[]}; }
+    }
+
+    function detectLocalData(){
+      const {oldSkills} = readOldData();
+      const migrated = localStorage.getItem('sb_cloud_migrated_v1') === '1';
+      if (oldSkills.length && !migrated){
+        $('migrationText').textContent = `共 ${oldSkills.length} 条。点击后会去重并上传，旧数据仍会保留在本机。`;
+        $('migrationBanner').hidden = false;
+      }else $('migrationBanner').hidden = true;
+    }
+
+    async function migrateLocalData(){
+      const button = $('migrationBtn');
+      const {oldSkills,oldCategories} = readOldData();
+      if (!oldSkills.length){ toast('没有检测到旧数据'); $('migrationBanner').hidden=true; return; }
+      setButtonLoading(button,true,'迁移中…');
+      try{
+        const categoryNames = [...new Set([
+          ...oldCategories.filter(name => name && name !== '全部'),
+          ...oldSkills.map(item => item.cat || item.category).filter(Boolean)
+        ])];
+        for (const name of categoryNames){
+          if (!categories.includes(name)){
+            const { error } = await db.from('skill_categories').insert({name,sort_order:categories.length});
+            if (error && error.code !== '23505') throw error;
+            categories.push(name);
+          }
+        }
+        const existing = new Set(skills.map(item => `${normalizeText(item.title)}|${normalizeText(item.category)}|${item.recorded_on||''}`));
+        const payload = oldSkills.map(item => ({
+          title:normalizeText(item.title) || '未命名技能',
+          category:normalizeText(item.cat || item.category) || '其他',
+          description:normalizeText(item.desc || item.description),
+          recorded_on:item.date || item.recorded_on || today()
+        })).filter(item => !existing.has(`${item.title}|${item.category}|${item.recorded_on}`));
+        if (payload.length){
+          const { error } = await db.from('skills').insert(payload);
+          if (error) throw error;
+        }
+        localStorage.setItem('sb_cloud_migrated_v1','1');
+        $('migrationBanner').hidden = true;
+        await loadCloudData();
+        toast(payload.length ? `已迁移 ${payload.length} 条技能` : '旧数据已经在云端');
+      }catch(error){ console.error(error); toast('迁移失败，请稍后重试'); }
+      finally{ setButtonLoading(button,false,'迁移中…'); }
+    }
+
+    function exportBackup(){
+      const data = { exported_at:new Date().toISOString(), skills, categories };
+      const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `技能书备份-${today()}.json`;
+      link.click();
+      URL.revokeObjectURL(url);
+      toast('备份文件已生成');
+    }
+
+    document.addEventListener('keydown', event => {
+      if (event.key !== 'Escape') return;
+      ['addOverlay','detailOverlay','categoryOverlay'].forEach(closeOverlay);
+    });
+
+    init();
+  </script>
 </body>
 </html>
