@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>技能书</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#f4f3f0;
+  --surface:#ffffff;
+  --border:#d8d5cf;
+  --border-strong:#b0aba2;
+  --text:#1a1916;
+  --text-2:#4a4742;
+  --text-3:#8a8780;
+  --accent:#2a2a2a;
+  --rule:#d0cdc7;
+}
+
+body{
+  font-family:'Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ── HEADER ── */
+.header{
+  background:var(--text);
+  color:#f4f3f0;
+  padding:0 2.5rem;
+  height:56px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  position:sticky;
+  top:0;
+  z-index:20;
+}
+.header-left{
+  display:flex;
+  align-items:baseline;
+  gap:14px;
+}
+.header-title{
+  font-family:'Noto Serif SC',serif;
+  font-size:18px;
+  font-weight:700;
+  letter-spacing:0.12em;
+  color:#f4f3f0;
+}
+.header-count{
+  font-size:12px;
+  color:#888;
+  letter-spacing:0.05em;
+}
+.add-btn{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  padding:6px 16px;
+  background:#f4f3f0;
+  color:var(--text);
+  border:none;
+  border-radius:2px;
+  font-size:13px;
+  font-family:inherit;
+  font-weight:500;
+  cursor:pointer;
+  letter-spacing:0.04em;
+  transition:opacity 0.15s;
+}
+.add-btn:hover{opacity:0.85}
+
+/* ── CONTROLS ── */
+.controls{
+  border-bottom:1px solid var(--border);
+  background:var(--surface);
+  display:flex;
+  align-items:stretch;
+  gap:0;
+}
+.search-wrap{
+  flex:1;
+  display:flex;
+  align-items:center;
+  padding:0 1.5rem;
+  border-right:1px solid var(--border);
+  gap:10px;
+}
+.search-wrap svg{
+  width:15px;height:15px;
+  stroke:var(--text-3);
+  flex-shrink:0;
+}
+.search-wrap input{
+  flex:1;
+  border:none;
+  outline:none;
+  font-size:13px;
+  font-family:inherit;
+  color:var(--text);
+  background:transparent;
+  padding:13px 0;
+}
+.search-wrap input::placeholder{color:var(--text-3)}
+.tabs{
+  display:flex;
+  align-items:center;
+  padding:0 1.5rem;
+  gap:0;
+  overflow-x:auto;
+  scrollbar-width:none;
+}
+.tabs::-webkit-scrollbar{display:none}
+.tab{
+  padding:14px 14px;
+  font-size:12px;
+  font-weight:500;
+  letter-spacing:0.06em;
+  color:var(--text-3);
+  cursor:pointer;
+  border-bottom:2px solid transparent;
+  white-space:nowrap;
+  transition:color 0.15s,border-color 0.15s;
+  user-select:none;
+}
+.tab:hover{color:var(--text-2)}
+.tab.active{color:var(--text);border-bottom-color:var(--text)}
+.manage-tab{
+  padding:14px 14px;
+  font-size:12px;
+  color:var(--text-3);
+  cursor:pointer;
+  letter-spacing:0.04em;
+  border-left:1px solid var(--border);
+  margin-left:4px;
+  display:flex;align-items:center;gap:4px;
+}
+.manage-tab:hover{color:var(--text-2)}
+
+/* ── TABLE ── */
+.table-wrap{
+  padding:0 2.5rem 4rem;
+}
+.table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:0;
+}
+.table thead tr{
+  border-bottom:2px solid var(--text);
+}
+.table th{
+  text-align:left;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:0.1em;
+  color:var(--text-3);
+  padding:14px 12px 10px;
+  text-transform:uppercase;
+}
+.table th:first-child{padding-left:0}
+.table th:last-child{padding-right:0;text-align:right}
+
+.table tbody tr{
+  border-bottom:1px solid var(--rule);
+  cursor:pointer;
+  transition:background 0.1s;
+}
+.table tbody tr:hover{background:#f9f8f6}
+.table tbody tr:last-child{border-bottom:none}
+
+.table td{
+  padding:14px 12px;
+  vertical-align:top;
+}
+.table td:first-child{padding-left:0}
+.table td:last-child{padding-right:0;text-align:right}
+
+.td-num{
+  font-size:11px;
+  color:var(--text-3);
+  font-weight:500;
+  letter-spacing:0.04em;
+  width:40px;
+  padding-top:15px;
+}
+.td-cat{width:80px}
+.cat-badge{
+  display:inline-block;
+  font-size:11px;
+  font-weight:500;
+  letter-spacing:0.05em;
+  padding:3px 8px;
+  border:1px solid var(--border-strong);
+  border-radius:2px;
+  color:var(--text-2);
+  background:transparent;
+}
+.td-title{
+  font-size:15px;
+  font-weight:500;
+  color:var(--text);
+  line-height:1.4;
+}
+.td-preview{
+  font-size:12px;
+  color:var(--text-3);
+  margin-top:3px;
+  line-height:1.5;
+}
+.td-date{
+  font-size:11px;
+  color:var(--text-3);
+  letter-spacing:0.04em;
+  white-space:nowrap;
+  padding-top:15px;
+}
+.arrow{
+  font-size:16px;
+  color:var(--border-strong);
+  display:inline-block;
+  margin-left:8px;
+  transition:transform 0.15s,color 0.15s;
+}
+.table tbody tr:hover .arrow{transform:translateX(3px);color:var(--text)}
+
+/* ── EMPTY ── */
+.empty{
+  display:none;
+  text-align:center;
+  padding:5rem 0;
+  color:var(--text-3);
+  font-size:13px;
+  letter-spacing:0.05em;
+}
+
+/* ── OVERLAY & MODAL ── */
+.overlay{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.45);
+  z-index:100;
+  align-items:center;
+  justify-content:center;
+  padding:1.5rem;
+}
+.overlay.open{display:flex}
+.modal{
+  background:var(--surface);
+  width:100%;
+  max-width:480px;
+  max-height:90vh;
+  overflow-y:auto;
+  border:1px solid var(--border-strong);
+  border-radius:2px;
+  position:relative;
+}
+.modal-head{
+  padding:1.25rem 1.5rem;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.modal-head h2{
+  font-size:14px;
+  font-weight:700;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  color:var(--text);
+}
+.modal-close{
+  background:none;
+  border:none;
+  font-size:20px;
+  color:var(--text-3);
+  cursor:pointer;
+  line-height:1;
+  padding:2px 4px;
+}
+.modal-close:hover{color:var(--text)}
+.modal-body{padding:1.25rem 1.5rem}
+.field{margin-bottom:14px}
+.field label{
+  display:block;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  color:var(--text-3);
+  margin-bottom:6px;
+}
+.field input,
+.field textarea,
+.field select{
+  width:100%;
+  padding:9px 12px;
+  border:1px solid var(--border);
+  border-radius:2px;
+  font-size:14px;
+  font-family:inherit;
+  color:var(--text);
+  background:var(--bg);
+  outline:none;
+  transition:border-color 0.15s;
+}
+.field input:focus,
+.field textarea:focus,
+.field select:focus{border-color:var(--text)}
+.field textarea{min-height:120px;resize:vertical;line-height:1.7}
+.modal-foot{
+  padding:1rem 1.5rem;
+  border-top:1px solid var(--border);
+  display:flex;
+  gap:8px;
+  justify-content:flex-end;
+}
+.modal-foot button{
+  padding:8px 20px;
+  border-radius:2px;
+  font-size:13px;
+  font-family:inherit;
+  font-weight:500;
+  cursor:pointer;
+  letter-spacing:0.04em;
+  border:1px solid var(--border-strong);
+  transition:all 0.15s;
+}
+.btn-primary{background:var(--text);color:#f4f3f0;border-color:var(--text)}
+.btn-primary:hover{background:#333}
+.btn-ghost{background:transparent;color:var(--text-2)}
+.btn-ghost:hover{background:var(--bg)}
+.btn-danger-ghost{background:transparent;color:#b03030;border-color:#d0a0a0}
+.btn-danger-ghost:hover{background:#fef0f0}
+
+/* ── DETAIL ── */
+.detail-meta{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:14px;
+}
+.detail-title{
+  font-size:20px;
+  font-weight:700;
+  line-height:1.4;
+  margin-bottom:16px;
+  color:var(--text);
+}
+.detail-body{
+  font-size:14px;
+  line-height:1.85;
+  color:var(--text-2);
+  white-space:pre-wrap;
+  border-top:1px solid var(--rule);
+  padding-top:14px;
+}
+.detail-date{font-size:11px;color:var(--text-3);letter-spacing:0.05em;margin-top:14px}
+
+/* ── CAT MANAGE ── */
+.cat-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:10px 0;
+  border-bottom:1px solid var(--rule);
+  font-size:14px;
+  color:var(--text-2);
+}
+.cat-row:last-child{border-bottom:none}
+.cat-del{
+  background:none;border:none;
+  color:var(--text-3);font-size:16px;
+  cursor:pointer;
+  padding:2px 6px;
+}
+.cat-del:hover{color:#b03030}
+.cat-add-row{
+  display:flex;gap:8px;margin-top:12px;
+}
+.cat-add-row input{
+  flex:1;
+  padding:8px 12px;
+  border:1px solid var(--border);
+  border-radius:2px;
+  font-size:13px;
+  font-family:inherit;
+  outline:none;
+}
+.cat-add-row input:focus{border-color:var(--text)}
+.cat-add-row button{
+  padding:8px 16px;
+  background:var(--text);
+  color:#f4f3f0;
+  border:none;
+  border-radius:2px;
+  font-size:13px;
+  font-family:inherit;
+  cursor:pointer;
+}
+.cat-add-row button:hover{background:#333}
+
+/* ── TOAST ── */
+.toast{
+  position:fixed;
+  bottom:1.5rem;
+  left:50%;
+  transform:translateX(-50%) translateY(60px);
+  background:var(--text);
+  color:#f4f3f0;
+  padding:8px 20px;
+  border-radius:2px;
+  font-size:12px;
+  letter-spacing:0.06em;
+  z-index:999;
+  transition:transform 0.22s ease;
+  pointer-events:none;
+}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+@media(max-width:640px){
+  .header{padding:0 1rem}
+  .table-wrap{padding:0 1rem 3rem}
+  .td-preview{display:none}
+  .td-num{display:none}
+  .search-wrap{padding:0 1rem}
+  .tabs{padding:0 0.5rem}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-left">
+    <span class="header-title">技能书</span>
+    <span class="header-count" id="headerCount"></span>
+  </div>
+  <button class="add-btn" onclick="openAdd()">＋ 新增技能</button>
+</header>
+
+<!-- CONTROLS -->
+<div class="controls">
+  <div class="search-wrap">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </svg>
+    <input type="text" id="searchInput" placeholder="搜索技能…" oninput="render()">
+  </div>
+  <div class="tabs" id="tabsRow"></div>
+</div>
+
+<!-- TABLE -->
+<div class="table-wrap">
+  <table class="table" id="mainTable">
+    <thead>
+      <tr>
+        <th style="width:40px">#</th>
+        <th style="width:90px">分类</th>
+        <th>技能</th>
+        <th style="width:100px;text-align:right">收录日期</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+  <div class="empty" id="emptyState">— 暂无记录 —</div>
+</div>
+
+<!-- ADD MODAL -->
+<div class="overlay" id="addOverlay">
+  <div class="modal">
+    <div class="modal-head">
+      <h2>新增技能</h2>
+      <button class="modal-close" onclick="closeAdd()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label>技能名称 *</label>
+        <input type="text" id="addTitle" placeholder="简洁明了地描述这项技能">
+      </div>
+      <div class="field">
+        <label>分类</label>
+        <select id="addCat"></select>
+      </div>
+      <div class="field">
+        <label>详细说明</label>
+        <textarea id="addDesc" placeholder="步骤、要点、注意事项…"></textarea>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-ghost" onclick="closeAdd()">取消</button>
+      <button class="btn-primary" onclick="saveAdd()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL MODAL -->
+<div class="overlay" id="detailOverlay">
+  <div class="modal">
+    <div class="modal-head">
+      <h2 id="detailHeadCat"></h2>
+      <button class="modal-close" onclick="closeDetail()">×</button>
+    </div>
+    <div class="modal-body" id="detailView">
+      <div class="detail-meta">
+        <div class="cat-badge" id="detailCatBadge"></div>
+      </div>
+      <div class="detail-title" id="detailTitle"></div>
+      <div class="detail-body" id="detailBody"></div>
+      <div class="detail-date" id="detailDate"></div>
+    </div>
+    <div class="modal-body" id="editView" style="display:none">
+      <div class="field">
+        <label>技能名称</label>
+        <input type="text" id="editTitle">
+      </div>
+      <div class="field">
+        <label>分类</label>
+        <select id="editCat"></select>
+      </div>
+      <div class="field">
+        <label>详细说明</label>
+        <textarea id="editDesc"></textarea>
+      </div>
+    </div>
+    <div class="modal-foot" id="detailFoot">
+      <button class="btn-danger-ghost" onclick="deleteSkill()">删除</button>
+      <button class="btn-ghost" onclick="openEdit()">编辑</button>
+      <button class="btn-ghost" onclick="closeDetail()">关闭</button>
+    </div>
+    <div class="modal-foot" id="editFoot" style="display:none">
+      <button class="btn-ghost" onclick="cancelEdit()">返回</button>
+      <button class="btn-primary" onclick="saveEdit()">保存修改</button>
+    </div>
+  </div>
+</div>
+
+<!-- CAT MODAL -->
+<div class="overlay" id="catOverlay">
+  <div class="modal">
+    <div class="modal-head">
+      <h2>管理分类</h2>
+      <button class="modal-close" onclick="closeCat()">×</button>
+    </div>
+    <div class="modal-body">
+      <div id="catList"></div>
+      <div class="cat-add-row">
+        <input type="text" id="newCatInput" placeholder="新分类名称">
+        <button onclick="addCat()">添加</button>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-primary" onclick="closeCat()">完成</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────
+const DEFAULT_SKILLS = [
+  {id:1,title:'西红柿炒蛋——先炒蛋再放番茄',cat:'厨房',desc:'鸡蛋先炒熟盛出，另起锅炒番茄出汁后再放回蛋。全程大火，出锅前加少量糖提鲜。两步分开炒，口感明显更嫩滑。',date:'2025-03-12'},
+  {id:2,title:'衣物沾油污：先用淀粉吸油',cat:'生活',desc:'油渍刚沾上时不要用水冲。撒少量面粉或淀粉，用手轻压5分钟吸油，再刷掉淀粉，最后正常清洗。去污率远高于直接用水。',date:'2025-04-01'},
+  {id:3,title:'衣服竖向叠放节省空间',cat:'收纳',desc:'将叠好的衣服像文件夹一样竖着放入抽屉，从正上方就能看到所有衣服，取用不会带乱其他。比平铺叠放节省约40%空间。',date:'2025-04-18'},
+  {id:4,title:'睡前4个拉伸动作',cat:'健康',desc:'颈部左右转动 × 10次\n肩膀向前绕圈 × 10次\n大腿前侧拉伸（单腿站立，另一腿向后弯曲手抓脚踝）× 30秒\n脊柱躺地扭转 × 每侧30秒\n\n每晚睡前做完，长期坚持有助改善睡眠深度。',date:'2025-05-02'},
+];
+const DEFAULT_CATS = ['全部','生活','厨房','收纳','健康','手工','数码','其他'];
+
+function load(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch{return d}}
+function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
+
+let skills  = load('sb_skills', DEFAULT_SKILLS);
+let cats    = load('sb_cats',   DEFAULT_CATS);
+let tab     = '全部';
+let current = null;
+
+// ── UTILS ─────────────────────────────────────────────
+function today(){return new Date().toISOString().slice(0,10)}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800)}
+
+// ── TABS ──────────────────────────────────────────────
+function buildTabs(){
+  const row = document.getElementById('tabsRow');
+  row.innerHTML = '';
+  cats.forEach(c=>{
+    const d=document.createElement('div');
+    d.className='tab'+(c===tab?' active':'');
+    d.textContent=c;
+    d.onclick=()=>{tab=c;buildTabs();render()};
+    row.appendChild(d);
+  });
+  const m=document.createElement('div');
+  m.className='manage-tab';
+  m.innerHTML='⚙ 分类';
+  m.onclick=openCat;
+  row.appendChild(m);
+}
+
+// ── RENDER ────────────────────────────────────────────
+function render(){
+  const q=document.getElementById('searchInput').value.trim().toLowerCase();
+  const filtered=skills.filter(s=>{
+    const mt=tab==='全部'||s.cat===tab;
+    const mq=!q||s.title.toLowerCase().includes(q)||(s.desc||'').toLowerCase().includes(q);
+    return mt&&mq;
+  });
+
+  document.getElementById('headerCount').textContent=skills.length+' 条技能';
+
+  const tbody=document.getElementById('tableBody');
+  const empty=document.getElementById('emptyState');
+  const tbl=document.getElementById('mainTable');
+
+  if(filtered.length===0){
+    tbl.style.display='none';
+    empty.style.display='block';
+    return;
+  }
+  tbl.style.display='table';
+  empty.style.display='none';
+
+  tbody.innerHTML=filtered.map((s,i)=>`
+    <tr onclick="openDetail(${s.id})">
+      <td class="td-num">${String(i+1).padStart(2,'0')}</td>
+      <td class="td-cat"><span class="cat-badge">${s.cat}</span></td>
+      <td>
+        <div class="td-title">${s.title}</div>
+        ${s.desc?`<div class="td-preview">${s.desc.replace(/\n/g,' ').slice(0,60)}${s.desc.length>60?'…':''}</div>`:''}
+      </td>
+      <td class="td-date">${s.date}<span class="arrow">›</span></td>
+    </tr>`).join('');
+}
+
+// ── SELECT FILL ───────────────────────────────────────
+function fillSel(id,selected){
+  const el=document.getElementById(id);
+  el.innerHTML=cats.filter(c=>c!=='全部')
+    .map(c=>`<option${c===selected?' selected':''}>${c}</option>`).join('');
+}
+
+// ── ADD ───────────────────────────────────────────────
+function openAdd(){
+  document.getElementById('addTitle').value='';
+  document.getElementById('addDesc').value='';
+  fillSel('addCat', cats[1]||'其他');
+  document.getElementById('addOverlay').classList.add('open');
+  setTimeout(()=>document.getElementById('addTitle').focus(),60);
+}
+function closeAdd(){document.getElementById('addOverlay').classList.remove('open')}
+function saveAdd(){
+  const title=document.getElementById('addTitle').value.trim();
+  if(!title){document.getElementById('addTitle').focus();return}
+  skills.unshift({id:Date.now(),title,cat:document.getElementById('addCat').value,
+    desc:document.getElementById('addDesc').value.trim(),date:today()});
+  save('sb_skills',skills);closeAdd();render();toast('已收录');
+}
+
+// ── DETAIL ────────────────────────────────────────────
+function openDetail(id){
+  current=id;
+  const s=skills.find(x=>x.id===id);if(!s)return;
+  document.getElementById('detailHeadCat').textContent=s.cat.toUpperCase();
+  document.getElementById('detailCatBadge').textContent=s.cat;
+  document.getElementById('detailTitle').textContent=s.title;
+  document.getElementById('detailBody').textContent=s.desc||'（暂无说明）';
+  document.getElementById('detailDate').textContent='收录于 '+s.date;
+  document.getElementById('detailView').style.display='block';
+  document.getElementById('editView').style.display='none';
+  document.getElementById('detailFoot').style.display='flex';
+  document.getElementById('editFoot').style.display='none';
+  document.getElementById('detailOverlay').classList.add('open');
+}
+function closeDetail(){document.getElementById('detailOverlay').classList.remove('open');current=null}
+
+// ── EDIT ──────────────────────────────────────────────
+function openEdit(){
+  const s=skills.find(x=>x.id===current);if(!s)return;
+  document.getElementById('editTitle').value=s.title;
+  document.getElementById('editDesc').value=s.desc||'';
+  fillSel('editCat',s.cat);
+  document.getElementById('detailView').style.display='none';
+  document.getElementById('editView').style.display='block';
+  document.getElementById('detailFoot').style.display='none';
+  document.getElementById('editFoot').style.display='flex';
+}
+function cancelEdit(){
+  document.getElementById('editView').style.display='none';
+  document.getElementById('detailView').style.display='block';
+  document.getElementById('detailFoot').style.display='flex';
+  document.getElementById('editFoot').style.display='none';
+}
+function saveEdit(){
+  const s=skills.find(x=>x.id===current);if(!s)return;
+  s.title=document.getElementById('editTitle').value.trim()||s.title;
+  s.cat=document.getElementById('editCat').value;
+  s.desc=document.getElementById('editDesc').value.trim();
+  save('sb_skills',skills);closeDetail();render();toast('已更新');
+}
+
+// ── DELETE ────────────────────────────────────────────
+function deleteSkill(){
+  if(!current||!confirm('确定删除这条技能？'))return;
+  skills=skills.filter(x=>x.id!==current);
+  save('sb_skills',skills);closeDetail();render();toast('已删除');
+}
+
+// ── CATEGORIES ────────────────────────────────────────
+function openCat(){renderCatList();document.getElementById('newCatInput').value='';document.getElementById('catOverlay').classList.add('open')}
+function closeCat(){document.getElementById('catOverlay').classList.remove('open');buildTabs();render()}
+function renderCatList(){
+  document.getElementById('catList').innerHTML=
+    cats.filter(c=>c!=='全部').map(c=>`
+      <div class="cat-row">
+        <span>${c}</span>
+        <button class="cat-del" onclick="removeCat('${c}')">×</button>
+      </div>`).join('');
+}
+function addCat(){
+  const v=document.getElementById('newCatInput').value.trim();
+  if(!v||cats.includes(v)){toast(v?'分类已存在':'请输入名称');return}
+  cats.push(v);save('sb_cats',cats);renderCatList();
+  document.getElementById('newCatInput').value='';toast('分类已添加');
+}
+function removeCat(cat){
+  const used=skills.some(s=>s.cat===cat);
+  if(used&&!confirm(`「${cat}」下还有技能，删除后将移入「其他」。确认？`))return;
+  if(used)skills.forEach(s=>{if(s.cat===cat)s.cat='其他'});
+  if(tab===cat)tab='全部';
+  cats=cats.filter(c=>c!==cat);
+  save('sb_cats',cats);save('sb_skills',skills);renderCatList();toast('已删除');
+}
+
+// ── KEYBOARD ──────────────────────────────────────────
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){closeAdd();closeDetail();closeCat()}
+});
+
+// ── INIT ──────────────────────────────────────────────
+buildTabs();render();
+</script>
+</body>
+</html>
