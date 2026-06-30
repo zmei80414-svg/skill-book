@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="dark">
   <meta name="theme-color" content="#101113">
+  <link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="技能书">
   <title>技能书</title>
   <style>
 
@@ -289,5 +295,19 @@
     document.addEventListener('keydown',event=>{if(event.key!=='Escape')return;if($('addOverlay').classList.contains('open'))closeAdd();else if($('detailOverlay').classList.contains('open'))closeDetail();else if($('profileOverlay').classList.contains('open'))closeOverlay('profileOverlay');else closeOverlay('categoryOverlay')});
     init();
   </script>
+  <script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker
+        .register("./service-worker.js")
+        .then(function () {
+          console.log("手机应用服务已启动");
+        })
+        .catch(function (error) {
+          console.error("手机应用服务启动失败：", error);
+        });
+    });
+  }
+</script>
 </body>
 </html>
